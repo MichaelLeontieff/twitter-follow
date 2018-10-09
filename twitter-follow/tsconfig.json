@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    },
     "sourceMap": true,
     "target": "es6",
     "module": "commonjs",
-   
+    "noImplicitAny": false,
     "strict": true,
     "strictNullChecks": false,
     
     "moduleResolution": "node",
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "src/**/*"

@@ -5,7 +5,8 @@
   "main": "./dist/server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/server.js",
+    "copyConfig": "cp .env.configuration ./dist/.env.configuration",
+    "start": "tsc && node ./dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -18,11 +19,11 @@
     "@types/morgan": "^1.7.35",
     "@types/oauth": "^0.9.0",
     "@types/request": "^2.47.1",
-    "@types/twitter": "0.0.28",
-    "dotenv": "^6.0.0",
+    "dotenv": "^2.0.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "morgan": "^1.9.1",
+    "natural": "^0.6.1",
     "oauth": "^0.9.15",
     "request": "^2.88.0",
     "twitter": "^1.7.1"

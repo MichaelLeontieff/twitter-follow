@@ -5,12 +5,14 @@ import * as dotenv from 'dotenv';
 import * as oauth from 'oauth';
 import * as logger from 'morgan';
 import * as request from 'request';
+import Twitter = require('twitter');
+import * as natural from 'natural';
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-dotenv.config({ path: ".env.configuration" });
+dotenv.config({ path: __dirname + "/.env.configuration" });
 
 class App {
 
@@ -43,6 +45,8 @@ class App {
   
     private launchConf() {
       this.oauthTest();
+      this.twitterStreamTest();
+      this.sentimentAnalysisTest();
   
       /**
        * Start Express server.
@@ -76,6 +80,29 @@ class App {
       });
 
     });
+  }
+
+  private twitterStreamTest() {
+    this.express.get('/twitter/stream', (req, res) => {
+
+        let client = new Twitter({
+            consumer_key: process.env.twitter_consumer_key,
+            consumer_secret: process.env.twitter_consumer_secret,
+            bearer_token: process.env.twitter_bearer_token
+        });
+
+        var stream = client.stream('statuses/filter', {track: 'javascript'});
+        stream.on('data', function(event) {
+            console.log(event && event.text);
+        });
+    });
+  }
+
+  private sentimentAnalysisTest() {
+    let Analyzer = natural.SentimentAnalyzer;
+    let stemmer = natural.PorterStemmer;
+    let analyzer = new Analyzer("English", stemmer, "afinn")
+    console.log(analyzer.getSentiment(["I", "hate", "cherries"]));
   }
 }
   
