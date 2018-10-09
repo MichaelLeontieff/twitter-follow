@@ -46,6 +46,7 @@ class App {
     private launchConf() {
       this.oauthTest();
       this.twitterStreamTest();
+      this.twitterAPITest();
       this.sentimentAnalysisTest();
   
       /**
@@ -72,10 +73,10 @@ class App {
 
       request.post(options, (err, response, body) => {
         if (err) {
-          throw new Error("Failed to fetch bearer token for twitter");
+            throw new Error("Failed to fetch bearer token for twitter");
         } else {
-          process.env.twitter_bearer_token = JSON.parse(body).access_token;
-          res.json(body);
+            process.env.twitter_bearer_token = JSON.parse(body).access_token;
+            res.json(body);
         } 
       });
 
@@ -94,6 +95,21 @@ class App {
         var stream = client.stream('statuses/filter', {track: 'javascript'});
         stream.on('data', function(event) {
             console.log(event && event.text);
+        });
+    });
+  }
+
+  private twitterAPITest() {
+    this.express.get('/twitter/api', (req, res) => {
+
+        let client = new Twitter({
+            consumer_key: process.env.twitter_consumer_key,
+            consumer_secret: process.env.twitter_consumer_secret,
+            bearer_token: process.env.twitter_bearer_token
+        });
+
+        var req = client.get('search/tweets', {q: 'javascript'}, (error, tweets, response) => {
+            console.log(error, tweets, response);
         });
     });
   }
