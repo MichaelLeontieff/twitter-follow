@@ -5,7 +5,7 @@
  */
 export interface IDataSource {
 
-    getTwitterTagSummary(config: any): Promise<any>;
+    getTwitterTagSummary(config: ITwitterTagSummaryConfig): Promise<any>;
 }
 
 
@@ -13,3 +13,10 @@ export enum DataSourceTypes {
     MOCK_DATA_SOURCE = "MOCK_DATA_SOURCE",
     REAL_DATA_SOURCE = "REAL_DATA_SOURCE"
 }
+
+// ##### Input interfaces ##### //
+export interface ITwitterTagSummaryConfig {
+    tags: string[];
+}
+
+// ##### Response interfaces ##### //

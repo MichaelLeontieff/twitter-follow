@@ -12,11 +12,11 @@ import * as redis from 'redis';
 import apiRouter from './routes/api';
 import rootRouter from './routes/root';
 
+dotenv.config({ path: __dirname + "/.env.configuration" });
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-
-dotenv.config({ path: __dirname + "/.env.configuration" });
 
 class App {
 
