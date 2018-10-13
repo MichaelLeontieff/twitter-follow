@@ -89,13 +89,26 @@ class App {
         let client = new Twitter({
             consumer_key: process.env.twitter_consumer_key,
             consumer_secret: process.env.twitter_consumer_secret,
-            bearer_token: process.env.twitter_bearer_token
+            access_token_key: process.env.twitter_access_token_key,
+            access_token_secret: process.env.twitter_access_token_secret
+            //bearer_token: process.env.twitter_bearer_token
         });
 
-        var stream = client.stream('statuses/filter', {track: 'javascript'});
-        stream.on('data', function(event) {
-            console.log(event && event.text);
+        let stream = client.stream('statuses/filter', {track: 'javascript'});
+        let record;
+
+        stream.on('data', (event) => {
+          record = event;
+          record && res.json(record);
+          stream.destroy();
         });
+
+        stream.on('error', (error) => {
+          record = error;
+          record && res.json(record);
+        });
+
+        
     });
   }
 
@@ -110,6 +123,7 @@ class App {
 
         var req = client.get('search/tweets', {q: 'javascript'}, (error, tweets, response) => {
             console.log(error, tweets, response);
+            res.json(tweets);
         });
     });
   }
