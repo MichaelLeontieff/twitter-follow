@@ -1,18 +1,11 @@
 import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, AfterViewInit } from '@angular/core';
 import { ForceDirectedGraph, Node } from '../../d3/models';
 import { D3Service } from '../../d3.service';
-import { $ } from 'protractor';
 
 @Component({
   selector: 'app-graph',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
-      <g>
-        <g [nodeVisual]="node" *ngFor="let node of nodes"></g>
-      </g>
-    </svg>
-  `,
+  templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.css']
 })
 export class GraphComponent implements OnInit, AfterViewInit {
