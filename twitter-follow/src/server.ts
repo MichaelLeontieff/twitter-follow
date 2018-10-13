@@ -7,6 +7,10 @@ import * as logger from 'morgan';
 import * as request from 'request';
 import Twitter = require('twitter');
 import * as natural from 'natural';
+import * as redis from 'redis';
+
+import apiRouter from './routes/api';
+import rootRouter from './routes/root';
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,15 +43,16 @@ class App {
      * Primary app routes.
      */
     private routes(): void {
-      //this.express.use("/", rootRouter);
-      //this.express.use("/api", apiRouter);
+      this.express.use("/api", apiRouter);
+      this.express.use("/", rootRouter);
     }
   
     private launchConf() {
-      this.oauthTest();
-      this.twitterStreamTest();
-      this.twitterAPITest();
-      this.sentimentAnalysisTest();
+      // this.oauthTest();
+      // this.twitterStreamTest();
+      // this.twitterAPITest();
+      // this.sentimentAnalysisTest();
+      // this.redisTest();
   
       /**
        * Start Express server.
@@ -133,6 +138,23 @@ class App {
     let stemmer = natural.PorterStemmer;
     let analyzer = new Analyzer("English", stemmer, "afinn")
     console.log(analyzer.getSentiment(["I", "hate", "cherries"]));
+  }
+
+  private redisTest() {
+    this.express.get('/redis', (req, res) => {
+      let client = redis.createClient();
+
+      client.on('error', (err) => {
+        console.log("Something went wrong", err);
+      });
+
+      client.set('my test key', 'my test value', redis.print);
+      client.get('my test key', (err, result) => {
+        if (err) throw err;
+        res.json(result);
+        console.log('GET result ->', result);
+      });
+    });
   }
 }
   
