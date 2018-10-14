@@ -1,5 +1,7 @@
 import { IDataSource, ITwitterTagSummaryConfig } from "./IDataSource";
 import Twitter = require('twitter');
+import {SentimentProcessor} from "../processing/SentimentProcessor";
+import { start } from "repl";
 
 /**
  * Calls the respective NewsAPIServices and normalises the data accordingly
@@ -8,11 +10,13 @@ export class ServiceDataSource implements IDataSource {
 
     getTwitterTagSummary(config: ITwitterTagSummaryConfig): Promise<any> {
         return new Promise((resolve, reject) => {
+            cache = [];
             let instance = TwitterServiceAPI.getInstance();
             instance.createStream(config.tags);
             setTimeout(() => {
                 resolve(cache);
-            }, 10000);
+                instance.destoryStream();
+            }, 100000);
         })
     }
 }
@@ -33,7 +37,6 @@ export class TwitterServiceAPI {
     static getInstance() {
         if (!TwitterServiceAPI.instance) {
             TwitterServiceAPI.instance = new TwitterServiceAPI();
-            // ... any one time initialization goes here ...
         }
         return TwitterServiceAPI.instance;
     }
@@ -50,7 +53,10 @@ export class TwitterServiceAPI {
     public createStream(filters: string[]) {
         if (!TwitterServiceAPI.twitterStream) {
             TwitterServiceAPI.twitterStream 
-                = TwitterServiceAPI.twitterClient.stream('statuses/filter', {track: filters.join(",")});
+                = TwitterServiceAPI.twitterClient.stream('statuses/filter', {
+                    track: filters.join(","),
+                    language: "en"
+                });
 
             TwitterServiceAPI.twitterStream.on('data', TwitterServiceAPI.dataCallback);
             TwitterServiceAPI.twitterStream.on('error', TwitterServiceAPI.errorCallback);
@@ -58,14 +64,24 @@ export class TwitterServiceAPI {
         }
     }
 
+    public destoryStream() {
+        TwitterServiceAPI.twitterStream.destroy();
+    }
+
     private static dataCallback(event) {
-        cache.push(event);
+        let startTime = Date.now();
+        let instance = SentimentProcessor.getInstance();
+        let classification = instance.getClassification(event.text).then(classification => {
+            let endTime = Date.now();
+            console.log("classification calc time", endTime - startTime);
+            cache.push({text: event.text, classification});
+        });
     }
 
     private static errorCallback = (event) => cache.push(event);
 
     private static cleanTweetResponse(tweet) {
-        
+
     }
 }
 
