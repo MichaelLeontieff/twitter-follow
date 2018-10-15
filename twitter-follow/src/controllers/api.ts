@@ -16,3 +16,16 @@ export const getTwitterTagSummary = (req: any, res: Response) => {
     res.json(error);
   });
 };
+
+/**
+ * POST /api/initiateStream
+ */
+export const initiateStream = (req: any, res: Response) => {
+  if (!dataManager)  dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+
+  dataManager.dataSource.initiateStream(req.body.config).then(response => {
+    res.json(response);
+  }).catch(error => {
+    res.json(error);
+  });
+};

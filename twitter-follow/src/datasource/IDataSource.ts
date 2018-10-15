@@ -5,7 +5,9 @@
  */
 export interface IDataSource {
 
-    getTwitterTagSummary(config: ITwitterTagSummaryConfig): Promise<any>;
+    initiateStream(streamConfig: ITwitterTagSummaryConfig): Promise<any>;
+
+    getTwitterTagSummary(tag: string): Promise<any>;
 }
 
 

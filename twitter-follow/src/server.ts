@@ -141,20 +141,19 @@ class App {
   }
 
   private redisTest() {
-    this.express.get('/redis', (req, res) => {
-      let client = redis.createClient();
+    // this.express.get('/redis', (req, res) => {
 
-      client.on('error', (err) => {
-        console.log("Something went wrong", err);
-      });
+    //   client.on('error', (err) => {
+    //     console.log("Something went wrong", err);
+    //   });
 
-      client.set('my test key', 'my test value', redis.print);
-      client.get('my test key', (err, result) => {
-        if (err) throw err;
-        res.json(result);
-        console.log('GET result ->', result);
-      });
-    });
+    //   client.set('my test key', 'my test value', redis.print);
+    //   client.get('my test key', (err, result) => {
+    //     if (err) throw err;
+    //     res.json(result);
+    //     console.log('GET result ->', result);
+    //   });
+    // });
   }
 }
   
