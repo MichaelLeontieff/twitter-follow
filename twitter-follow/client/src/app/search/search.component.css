@@ -1,0 +1,27 @@
+#search-app-container {
+    background-color: white;
+    border-radius: 0 0 0.5em 0.5em;
+}
+
+#search-box {
+    padding: 5px;
+}
+
+#current-searches {
+    padding: 5px;
+    text-align: center;
+}
+
+.current-search, .current-search-none {
+    display: inline-block;
+    min-width: 100px;
+    border: solid black 1px;
+    border-radius: 0.2rem;
+    padding: 5px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+
+.current-search-none {
+    border: none;
+}

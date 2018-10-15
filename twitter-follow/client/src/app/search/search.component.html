@@ -1,0 +1,10 @@
+<div id="search-app-container">
+  <div id="search-box">
+    <input type="text" class="form-control" #searchInput (keyup.enter)="addToCurrentSearches(searchInput.value); searchInput.value = '';"
+      (blur)="addToCurrentSearches(searchInput.value); searchInput.value = '';" placeholder="Hashtags or words to search for...">
+  </div>
+  <div id="current-searches">
+    <div class="current-search" *ngFor="let search of currentSearches">{{search}}</div>
+    <div class="current-search-none" *ngIf="!currentSearches || currentSearches.length == 0">No searches active...</div>
+  </div>
+</div>
