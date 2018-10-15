@@ -8,6 +8,8 @@ export interface IDataSource {
     initiateStream(streamConfig: ITwitterTagSummaryConfig): Promise<any>;
 
     getTwitterTagSummary(tag: string): Promise<any>;
+
+    // TODO: add terminate stream endpoint
 }
 
 

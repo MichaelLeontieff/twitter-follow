@@ -10,14 +10,23 @@ export class ServiceDataSource implements IDataSource {
 
     getTwitterTagSummary(tag: string): Promise<any> {
         return new Promise((resolve, reject) => {
-        //     cache = [];
-        //     let instance = TwitterServiceAPI.getInstance();
-        //     instance.createStream(config.tags);
-        //     setTimeout(() => {
-        //         resolve(cache);
-        //         instance.destoryStream();
-        //     }, 100000);
-            resolve(undefined);
+            // get (pop) abitrary number of results from cache
+            let cacheInstance = CacheService.getInstance();
+            let classifierInstance = SentimentProcessor.getInstance();
+            cacheInstance.popResultsFromCache(tag, Number(process.env['cache_pop_per_request'])).then(cacheResults => {
+                // run classification and get results
+                cacheResults.map(cache => {
+                    let parsedResult = JSON.parse(cache);
+                    return parsedResult.text;
+                });
+
+                Promise.all(classifierInstance.getClassifications(cacheResults)).then(results => {
+                    // update summary object with results
+                    cacheInstance.updateProcessedCount(tag, results.length).then(totalCount => {
+                        resolve(totalCount);
+                    });
+                });              
+            });
         })
     }
 

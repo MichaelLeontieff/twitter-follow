@@ -53,6 +53,10 @@ export class SentimentProcessor {
         });
     }
 
+    public getClassifications(values: string[]): Promise<string>[] {
+        return values.map(value => this.getClassification(value));
+    }
+
     public static convertCSVToTrainingModel(): Promise<any> {
         return new Promise((resolve, reject) => {
             if (SentimentProcessor.trainingModel) {
