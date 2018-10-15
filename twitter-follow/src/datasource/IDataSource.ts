@@ -5,8 +5,16 @@
  */
 export interface IDataSource {
 
+    /**
+     * given a list of filters in the POST body, initiate a stream with these values
+     * @param streamConfig 
+     */
     initiateStream(streamConfig: ITwitterTagSummaryConfig): Promise<any>;
 
+    /**
+     * given a tag, process a chunk of cache results pertaining to the tag and return the total processed count
+     * @param tag 
+     */
     getTwitterTagSummary(tag: string): Promise<any>;
 
     // TODO: add terminate stream endpoint
