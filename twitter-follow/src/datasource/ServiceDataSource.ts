@@ -14,17 +14,16 @@ export class ServiceDataSource implements IDataSource {
             let cacheInstance = CacheService.getInstance();
             let classifierInstance = SentimentProcessor.getInstance();
             cacheInstance.popResultsFromCache(tag, Number(process.env['cache_pop_per_request'])).then(cacheResults => {
-                // run classification and get results
                 cacheResults.map(cache => {
                     let parsedResult = JSON.parse(cache);
                     return parsedResult.text;
                 });
-
+                // run classification and get results
+                // TODO: train the model upon instance start, not on first request
                 Promise.all(classifierInstance.getClassifications(cacheResults)).then(results => {
-                    // update summary object with results
-                    cacheInstance.updateProcessedCount(tag, results.length).then(totalCount => {
-                        resolve(totalCount);
-                    });
+                    cacheInstance.updateSummaryForFilter(tag, results).then(updatedStateObject => {
+                        resolve(updatedStateObject);
+                    })
                 });              
             });
         })

@@ -1,5 +1,4 @@
 import { IDataSource } from "./IDataSource";
-import * as data from './mockdata/summaryDataTags';
 
 export class MockDataSource implements IDataSource {
 

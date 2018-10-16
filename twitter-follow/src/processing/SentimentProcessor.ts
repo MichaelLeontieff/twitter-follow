@@ -17,10 +17,10 @@ export class SentimentProcessor {
     constructor() {
         let Analyzer = natural.SentimentAnalyzer;
         let Tokeniser = natural.OrthographyTokenizer;
-        let stemmer = natural.PorterStemmer;
+        let Stemmer = natural.PorterStemmer;
         let Classifier = natural.BayesClassifier;
 
-        SentimentProcessor.analyser = new Analyzer("English", stemmer, "afinn");
+        SentimentProcessor.analyser = new Analyzer("English", Stemmer, "afinn");
         SentimentProcessor.tokeniser = new Tokeniser({language: "en"});
         SentimentProcessor.classifier = new Classifier();
     }
@@ -95,4 +95,10 @@ export class SentimentProcessor {
             }
         })
     }
+}
+
+export enum Classifications {
+    POSITIVE = "positive",
+    NEGATIVE = "negative",
+    NEUTRAL = "neutral"
 }

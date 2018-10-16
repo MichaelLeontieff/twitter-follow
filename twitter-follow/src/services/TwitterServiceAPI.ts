@@ -7,8 +7,6 @@ export class TwitterServiceAPI {
     private static twitterClient: Twitter;
     private static twitterStream;
 
-    private static tester;
-
     constructor() {
         TwitterServiceAPI.twitterClient = new Twitter(TwitterServiceAPI.getKeyConfiguration());
     }
@@ -60,14 +58,6 @@ export class TwitterServiceAPI {
 
     private static errorCallback(event) {
         console.error("stream error", event);   
-    }
-
-    private static cleanTweetResponse(tweet) {
-
-    }
-
-    private static saveTweetToStore() {
-
     }
 }
 
