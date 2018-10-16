@@ -10,7 +10,7 @@ let dataManager;
 export const getTwitterTagSummary = (req: any, res: Response) => {
   if (!dataManager)  dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
 
-  dataManager.dataSource.getTwitterTagSummary(req.body.tag).then(response => {
+  dataManager.dataSource.getTwitterTagSummary(req.body).then(response => {
     res.json(response);
   }).catch(error => {
     res.json(error);

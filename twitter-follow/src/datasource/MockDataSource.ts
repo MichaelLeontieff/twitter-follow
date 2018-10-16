@@ -1,8 +1,8 @@
-import { IDataSource } from "./IDataSource";
+import { IDataSource, ITwitterTagSummaryConfig, ITwitterStreamConfig } from "./IDataSource";
 
 export class MockDataSource implements IDataSource {
 
-    getTwitterTagSummary(tag: string): Promise<any> {
+    getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any> {
         return new Promise((resolve, reject) => {
         //     cache = [];
         //     let instance = TwitterServiceAPI.getInstance();
@@ -15,7 +15,7 @@ export class MockDataSource implements IDataSource {
         })
     }
 
-    initiateStream(streamConfig: any): Promise<any> {
+    initiateStream(streamConfig: ITwitterStreamConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             //     cache = [];
             //     let instance = TwitterServiceAPI.getInstance();

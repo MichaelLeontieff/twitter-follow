@@ -1,5 +1,5 @@
-import { IDataSource, ITwitterTagSummaryConfig } from "./IDataSource";
-import {SentimentProcessor} from "../processing/SentimentProcessor";
+import { IDataSource, ITwitterTagSummaryConfig, ITwitterStreamConfig } from "./IDataSource";
+import { SentimentProcessor } from "../processing/SentimentProcessor";
 import { TwitterServiceAPI } from "../services/TwitterServiceAPI";
 import { CacheService } from "../services/CacheService";
 
@@ -8,12 +8,16 @@ import { CacheService } from "../services/CacheService";
  */
 export class ServiceDataSource implements IDataSource {
 
-    getTwitterTagSummary(tag: string): Promise<any> {
+    getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             // get (pop) abitrary number of results from cache
             let cacheInstance = CacheService.getInstance();
             let classifierInstance = SentimentProcessor.getInstance();
-            cacheInstance.popResultsFromCache(tag, Number(process.env['cache_pop_per_request'])).then(cacheResults => {
+            let chunkSize = summaryConfig.chunkSize 
+                || Number(process.env['cache_pop_per_request'])
+                || 25;
+
+            cacheInstance.popResultsFromCache(summaryConfig.tag, chunkSize).then(cacheResults => {
                 cacheResults.map(cache => {
                     let parsedResult = JSON.parse(cache);
                     return parsedResult.text;
@@ -21,7 +25,7 @@ export class ServiceDataSource implements IDataSource {
                 // run classification and get results
                 // TODO: train the model upon instance start, not on first request
                 Promise.all(classifierInstance.getClassifications(cacheResults)).then(results => {
-                    cacheInstance.updateSummaryForFilter(tag, results).then(updatedStateObject => {
+                    cacheInstance.updateSummaryForFilter(summaryConfig.tag, results).then(updatedStateObject => {
                         resolve(updatedStateObject);
                     })
                 });              
@@ -29,7 +33,7 @@ export class ServiceDataSource implements IDataSource {
         })
     }
 
-    initiateStream(streamConfig: ITwitterTagSummaryConfig): Promise<any> {
+    initiateStream(streamConfig: ITwitterStreamConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             let twitterStreamInstance = TwitterServiceAPI.getInstance();
             let cacheInstance = CacheService.getInstance();

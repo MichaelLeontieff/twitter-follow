@@ -9,13 +9,13 @@ export interface IDataSource {
      * given a list of filters in the POST body, initiate a stream with these values
      * @param streamConfig 
      */
-    initiateStream(streamConfig: ITwitterTagSummaryConfig): Promise<any>;
+    initiateStream(streamConfig: ITwitterStreamConfig): Promise<any>;
 
     /**
      * given a tag, process a chunk of cache results pertaining to the tag and return the total processed count
      * @param tag 
      */
-    getTwitterTagSummary(tag: string): Promise<any>;
+    getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any>;
 
     // TODO: add terminate stream endpoint
 }
@@ -27,8 +27,13 @@ export enum DataSourceTypes {
 }
 
 // ##### Input interfaces ##### //
-export interface ITwitterTagSummaryConfig {
+export interface ITwitterStreamConfig {
     tags: string[];
+}
+
+export interface ITwitterTagSummaryConfig {
+    tag: string;
+    chunkSize: number;
 }
 
 // ##### Response interfaces ##### //
