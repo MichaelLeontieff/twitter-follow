@@ -1,6 +1,6 @@
 import { IDataSource, ITwitterTagSummaryConfig, ITwitterStreamConfig } from "./IDataSource";
 import { SentimentProcessor } from "../processing/SentimentProcessor";
-import { TwitterServiceAPI } from "../services/TwitterServiceAPI";
+import { TwitterServiceAPI, StreamStates } from "../services/TwitterServiceAPI";
 import { CacheService } from "../services/CacheService";
 
 /**
@@ -37,8 +37,21 @@ export class ServiceDataSource implements IDataSource {
         return new Promise((resolve, reject) => {
             let twitterStreamInstance = TwitterServiceAPI.getInstance();
             let cacheInstance = CacheService.getInstance();
-            twitterStreamInstance.createStream(streamConfig.tags, cacheInstance.insertTweetIntoCache);
+            twitterStreamInstance.createStream(streamConfig.tags, cacheInstance);
             resolve(`Created stream with tags: ${JSON.stringify(streamConfig.tags)}`)
+        });
+    }
+
+    setRunningStreamForTermination(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let cacheInstance = CacheService.getInstance();
+
+            cacheInstance.setStreamStatus(StreamStates.TERMINATED).then(result => {
+                console.info("Twitter stream marked for termination");
+                resolve(result);
+            }).catch(err => {
+                reject(err);
+            });
         });
     }
 

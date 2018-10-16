@@ -18,6 +18,7 @@ export interface IDataSource {
     getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any>;
 
     // TODO: add terminate stream endpoint
+    setRunningStreamForTermination(): Promise<any>;
 }
 
 

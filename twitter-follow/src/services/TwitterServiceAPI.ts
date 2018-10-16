@@ -1,4 +1,5 @@
 import Twitter = require('twitter');
+import { CacheService } from '../services/CacheService';
 
 export class TwitterServiceAPI {
     private static instance: TwitterServiceAPI;
@@ -6,6 +7,7 @@ export class TwitterServiceAPI {
     private static keyConfiguration: ITwitterServiceConfig;
     private static twitterClient: Twitter;
     private static twitterStream;
+    private static twitterStreamId;
 
     constructor() {
         TwitterServiceAPI.twitterClient = new Twitter(TwitterServiceAPI.getKeyConfiguration());
@@ -27,21 +29,44 @@ export class TwitterServiceAPI {
         }
     }
 
-    public createStream(filters: string[], onStreamResultCallback) {
-        if (!TwitterServiceAPI.twitterStream) {
+    public getTwitterStreamId() {
+        return TwitterServiceAPI.twitterStreamId();
+    }
+
+    // TODO: clean up
+    public createStream(filters: string[], cacheInstance: CacheService) {
+        //if (!TwitterServiceAPI.twitterStream) {
             TwitterServiceAPI.twitterStream 
                 = TwitterServiceAPI.twitterClient.stream('statuses/filter', {
                     track: filters.join(","),
                     language: "en"
                 });
+            
+            // not actually coupled to the stream, signifies presence rather than link of/to a stream
+            TwitterServiceAPI.twitterStreamId = this.createTwitterStreamId();
+            // it's a promise but we don't care
+            cacheInstance.setStreamStatus(StreamStates.RUNNING);
+
+            // Interval poll for termination flag
+            let interval = setInterval(() => {
+                cacheInstance.getStreamStatus().then(streamStatus => {
+                    if (streamStatus === StreamStates.TERMINATED) {
+                        console.info("Twitter stream terminated");
+                        TwitterServiceAPI.twitterStream.destroy();
+                        TwitterServiceAPI.twitterStream = null;
+                        clearInterval(interval);
+                    }
+                });
+            }, 10000);
 
             // on stream response
             TwitterServiceAPI.twitterStream.on('data', (event) => {
+
                 let matchedFilter = TwitterAPIHelpers.getMatchedFilterForTweet(filters, event);
                 let tweetText = TwitterAPIHelpers.getTextFromTweet(event);
 
                 if (matchedFilter && tweetText) {
-                    onStreamResultCallback(matchedFilter, TwitterAPIHelpers.getCleanedTweet(event));
+                    cacheInstance.insertTweetIntoCache(matchedFilter, TwitterAPIHelpers.getCleanedTweet(event));
                 } else {
                     console.error(`Failed to correlate tweet to filter`);
                 }
@@ -49,7 +74,7 @@ export class TwitterServiceAPI {
 
             // on stream error
             TwitterServiceAPI.twitterStream.on('error', TwitterServiceAPI.errorCallback);
-        }
+        //}
     }
 
     public destoryStream() {
@@ -58,6 +83,10 @@ export class TwitterServiceAPI {
 
     private static errorCallback(event) {
         console.error("stream error", event);   
+    }
+
+    private createTwitterStreamId() {
+        return `twitter_stream_id_${Date.now()}`;
     }
 }
 
@@ -129,6 +158,11 @@ export class TwitterAPIHelpers {
 
         return hashTags;
     }
+}
+
+export enum StreamStates {
+    TERMINATED = "TERMINATED",
+    RUNNING = "RUNNING"
 }
 
 export interface ITwitterServiceConfig {

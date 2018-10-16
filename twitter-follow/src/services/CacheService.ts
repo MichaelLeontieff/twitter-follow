@@ -2,6 +2,9 @@ import * as redis from 'redis';
 import { TwitterAPIHelpers } from './TwitterServiceAPI';
 import { Classifications } from '../processing/SentimentProcessor';
 
+export const TWITTER_STREAM_ID = "twitter_stream";
+export const TWITTER_STREAM_STATE = "twitter_stream_state";
+
 export class CacheService {
     private static instance: CacheService;
     private static client: redis.RedisClient;
@@ -28,6 +31,48 @@ export class CacheService {
                 err ? reject(err) : resolve(results);
             });
         })
+    }
+
+    public registerStreamInState(id: string) {
+        return new Promise((resolve, reject) => {
+            CacheService.client.set(TWITTER_STREAM_ID, id, (err, result) => {
+                err ? reject(err) : resolve(result);
+            });
+        })
+    }
+
+    public deRegisterStreamInState() {
+        return new Promise((resolve, reject) => {
+            CacheService.client.del(TWITTER_STREAM_ID, (err, result) => {
+                err ? reject(err) : resolve(result);
+            });
+        })
+    }
+
+    public getStreamStatus(): Promise<string> {
+        return this.getValueCache(TWITTER_STREAM_STATE);
+        
+    }
+
+    public setStreamStatus(value: string) {
+        return this.setValueCache(TWITTER_STREAM_STATE, value);
+        
+    }
+
+    private getValueCache(key): Promise<string> {
+        return new Promise((resolve, reject) => {
+            CacheService.client.get(key, (err, result) => {
+                err ? reject(err) : resolve(result);
+            });
+        });
+    }
+
+    private setValueCache(key, value) {
+        return new Promise((resolve, reject) => {
+            CacheService.client.set(key, value, (err, result) => {
+                err ? reject(err) : resolve(result);
+            });
+        });
     }
 
     public updateProcessedCount(filter: string, additions: number): Promise<number> {

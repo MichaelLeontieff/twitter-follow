@@ -21,9 +21,22 @@ export const getTwitterTagSummary = (req: any, res: Response) => {
  * POST /api/initiateStream
  */
 export const initiateStream = (req: any, res: Response) => {
-  if (!dataManager)  dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+  if (!dataManager) dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
 
-  dataManager.dataSource.initiateStream(req.body.config).then(response => {
+  dataManager.dataSource.initiateStream(req.body).then(response => {
+    res.json(response);
+  }).catch(error => {
+    res.json(error);
+  });
+};
+
+/**
+ * POST /api/setRunningStreamForTermination
+ */
+export const setTerminationFlag = (req: any, res: Response) => {
+  if (!dataManager) dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+
+  dataManager.dataSource.setRunningStreamForTermination(req.body).then(response => {
     res.json(response);
   }).catch(error => {
     res.json(error);

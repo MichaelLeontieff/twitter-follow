@@ -11,6 +11,7 @@ class Api {
   private init() {
     this.router.post("/twitterTagSummary", apiController.getTwitterTagSummary);
     this.router.post("/initiateStream", apiController.initiateStream);
+    this.router.post("/setRunningStreamForTermination", apiController.setTerminationFlag);
   }
 }
 
