@@ -6,8 +6,12 @@ WORKDIR /usr/src/app
 
 COPY ./twitter-follow/ .
 
+# Server-side
+RUN npm install
+
 WORKDIR /usr/src/app/client
 
+# Client
 RUN npm install
 
 RUN npm run build

@@ -7,6 +7,7 @@
     "build": "tsc && npm run copy-static-assets",
     "start": "npm run build && node ./dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node ./dist/server.js",
     "copy-static-assets": "node copyStaticAssets.js"
   },
   "author": "",
