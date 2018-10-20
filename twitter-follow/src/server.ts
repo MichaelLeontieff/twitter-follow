@@ -10,13 +10,8 @@ import * as natural from 'natural';
 import * as redis from 'redis';
 
 import apiRouter from './routes/api';
-import rootRouter from './routes/root';
 
 dotenv.config({ path: __dirname + "/.env.configuration" });
-
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
 
 class App {
 
@@ -44,7 +39,7 @@ class App {
      */
     private routes(): void {
       this.express.use("/api", apiRouter);
-      this.express.use("/", rootRouter);
+      this.express.use("/", express.static('client'));
     }
   
     private launchConf() {

@@ -5,7 +5,7 @@
   "main": "./dist/server.js",
   "scripts": {
     "build": "tsc && npm run copy-static-assets",
-    "start": "npm run build && node ./dist/server.js",
+    "start": "npm run build && cd dist && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy-static-assets": "node copyStaticAssets.js"
   },
@@ -30,6 +30,7 @@
     "redis": "^2.8.0",
     "request": "^2.88.0",
     "shelljs": "^0.8.2",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "typescript": "^3.1.3"
   }
 }

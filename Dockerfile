@@ -16,6 +16,12 @@ WORKDIR /usr/src/app
 
 RUN rm -rf client/
 
+RUN npm install
+
+RUN npm run build
+
+RUN rm -rf src/
+
 RUN chmod +x ./start-server.sh
 
 CMD [ "bash", "./start-server.sh" ]

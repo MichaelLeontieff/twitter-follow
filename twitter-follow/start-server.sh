@@ -1,3 +1,3 @@
 #!/bin/bash
-npm install
-npm start
+cd dist
+node server.js
