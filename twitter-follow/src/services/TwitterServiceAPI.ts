@@ -35,7 +35,7 @@ export class TwitterServiceAPI {
 
     // TODO: clean up
     public createStream(filters: string[], cacheInstance: CacheService) {
-        //if (!TwitterServiceAPI.twitterStream) {
+        if (!TwitterServiceAPI.twitterStream) {
             TwitterServiceAPI.twitterStream 
                 = TwitterServiceAPI.twitterClient.stream('statuses/filter', {
                     track: filters.join(","),
@@ -52,21 +52,25 @@ export class TwitterServiceAPI {
                 cacheInstance.getStreamStatus().then(streamStatus => {
                     if (streamStatus === StreamStates.TERMINATED) {
                         console.info("Twitter stream terminated");
-                        TwitterServiceAPI.twitterStream.destroy();
-                        TwitterServiceAPI.twitterStream = null;
+                        if (TwitterServiceAPI.twitterStream) {
+                            TwitterServiceAPI.twitterStream.destroy();
+                            TwitterServiceAPI.twitterStream = null;
+                        }
                         clearInterval(interval);
                     }
                 });
-            }, 10000);
+            }, 100);
 
             // on stream response
             TwitterServiceAPI.twitterStream.on('data', (event) => {
 
-                let matchedFilter = TwitterAPIHelpers.getMatchedFilterForTweet(filters, event);
+                let matchedFilters = TwitterAPIHelpers.getMatchedFiltersForTweet(filters, event);
                 let tweetText = TwitterAPIHelpers.getTextFromTweet(event);
 
-                if (matchedFilter && tweetText) {
-                    cacheInstance.insertTweetIntoCache(matchedFilter, TwitterAPIHelpers.getCleanedTweet(event));
+                if (matchedFilters && matchedFilters.length > 0 && tweetText) {
+                    matchedFilters.forEach((filter) => {
+                        cacheInstance.insertTweetIntoCache(filter, TwitterAPIHelpers.getCleanedTweet(event));
+                    });
                 } else {
                     console.error(`Failed to correlate tweet to filter`);
                 }
@@ -74,7 +78,18 @@ export class TwitterServiceAPI {
 
             // on stream error
             TwitterServiceAPI.twitterStream.on('error', TwitterServiceAPI.errorCallback);
-        //}
+        } else {
+            cacheInstance.getStreamStatus().then(streamStatus => {
+                if (streamStatus === StreamStates.TERMINATED) {
+                    console.info("Twitter stream terminated");
+                    if (TwitterServiceAPI.twitterStream) {
+                        TwitterServiceAPI.twitterStream.destroy();
+                        TwitterServiceAPI.twitterStream = null;
+                    }
+                    this.createStream(filters, cacheInstance);
+                }
+            });
+        }
     }
 
     public destoryStream() {
@@ -93,30 +108,22 @@ export class TwitterServiceAPI {
 
 export class TwitterAPIHelpers {
 
-    public static getMatchedFilterForTweet(filters: string[], tweet) {
+    public static getMatchedFiltersForTweet(filters: string[], tweet) {
         let tweetText = TwitterAPIHelpers.getTextFromTweet(tweet);
         let quotedTweetText = TwitterAPIHelpers.getQuotedTweetText(tweet);
-        let matchedFilter;
 
-        for (let key in filters) {
-            let filter = filters[key];
-
-            // check tweet
+        return filters.filter((filter) => {
             if (tweetText.toUpperCase().includes(filter.toUpperCase())) {
-                matchedFilter = filter;
-                break;
+                return true;
             }
 
             // check quoted tweet if applicable
             if (quotedTweetText) {
                 if (quotedTweetText.toUpperCase().includes(filter.toUpperCase())) {
-                    matchedFilter = filter;
-                    break;
+                    return true;
                 }
             }
-        }
-
-        return matchedFilter;
+        });
     }
 
     public static getCleanedTweet(tweet): any {
@@ -134,7 +141,7 @@ export class TwitterAPIHelpers {
             && tweet.retweeted_status.extended_tweet
             && tweet.retweeted_status.extended_tweet.full_text) {
                 tweetText = tweet.retweeted_status.extended_tweet.full_text;
-        } else {
+        } else if (tweet.text) {
             tweetText = tweet.text;
         }
 
