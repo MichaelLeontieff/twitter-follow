@@ -8,10 +8,20 @@ export const TWITTER_STREAM_STATE = "twitter_stream_state";
 export class CacheService {
     private static instance: CacheService;
     private static client: redis.RedisClient;
+    private static resourceCount;
 
     constructor() {
         CacheService.client = redis.createClient();
         CacheService.client.on('error', CacheService.errorCallback);
+        CacheService.resourceCount = 0;
+
+        CacheService.resourceLogger();
+    }
+
+    static resourceLogger() {
+        let interval = setInterval(() => {
+            console.log(`Cached ${CacheService.resourceCount} tweets`);
+        }, 5000);
     }
 
     static getInstance() {
@@ -196,8 +206,8 @@ export class CacheService {
 
     public insertTweetIntoCache(filter: string, tweet: any) {
         let cleanedTweet = TwitterAPIHelpers.getCleanedTweet(tweet);
-        console.log(`Caching tweet: ${JSON.stringify(cleanedTweet)}`);
         CacheService.client.sadd(filter, JSON.stringify(cleanedTweet));
+        CacheService.resourceCount++;
     }
 
     private static getSummaryCountKeyForFilter(filter: string) {
