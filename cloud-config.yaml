@@ -1,0 +1,4 @@
+runcmd:
+    - [ sh, -c, "sudo apt-get update -y" ]
+    - [ sh, -c, "sudo apt-get install docker.io"]
+    - [ sh, -c, "sudo docker run mleontieff/cloud_computing_two"]
