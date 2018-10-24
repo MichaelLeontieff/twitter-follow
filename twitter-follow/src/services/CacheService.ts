@@ -11,7 +11,10 @@ export class CacheService {
     private static resourceCount;
 
     constructor() {
-        CacheService.client = redis.createClient();
+        CacheService.client = redis.createClient({
+            host: process.env['redis_host'], 
+            port: Number(process.env['redis_port'])
+        });
         CacheService.client.on('error', CacheService.errorCallback);
         CacheService.resourceCount = 0;
 

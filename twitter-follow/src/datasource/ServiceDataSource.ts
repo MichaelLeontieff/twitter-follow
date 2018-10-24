@@ -18,13 +18,13 @@ export class ServiceDataSource implements IDataSource {
                 || 25;
 
             cacheInstance.popResultsFromCache(summaryConfig.tag, chunkSize).then(cacheResults => {
-                cacheResults.map(cache => {
+                let extractedResults = cacheResults.map(cache => {
                     let parsedResult = JSON.parse(cache);
                     return parsedResult.text;
                 });
                 // run classification and get results
                 // TODO: train the model upon instance start, not on first request
-                Promise.all(classifierInstance.getClassifications(cacheResults)).then(results => {
+                Promise.all(classifierInstance.getClassifications(extractedResults)).then(results => {
                     cacheInstance.updateSummaryForFilter(summaryConfig.tag, results).then(updatedStateObject => {
                         resolve(updatedStateObject);
                     })

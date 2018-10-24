@@ -33,7 +33,6 @@ export class TwitterServiceAPI {
         return TwitterServiceAPI.twitterStreamId();
     }
 
-    // TODO: clean up
     public createStream(filters: string[], cacheInstance: CacheService) {
         if (!TwitterServiceAPI.twitterStream) {
             TwitterServiceAPI.twitterStream 
@@ -44,7 +43,7 @@ export class TwitterServiceAPI {
             
             // not actually coupled to the stream, signifies presence rather than link of/to a stream
             TwitterServiceAPI.twitterStreamId = this.createTwitterStreamId();
-            // it's a promise but we don't care
+            // it's a promise but we don't care - as long as it's set
             cacheInstance.setStreamStatus(StreamStates.RUNNING);
 
             // Interval poll for termination flag

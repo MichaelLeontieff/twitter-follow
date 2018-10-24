@@ -44,12 +44,23 @@ export class SentimentProcessor {
 
     public getClassification(value: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            SentimentProcessor.convertCSVToTrainingModel().then(trainingModel => {
-                SentimentProcessor.loadTrainingModel();
+            // SentimentProcessor.convertCSVToTrainingModel().then(trainingModel => {
+            //     SentimentProcessor.loadTrainingModel();
+
+            //     SentimentProcessor.classifier.save(__dirname + '/classifier.json', (err, classifier) => {
+            //         // the classifier is saved to the classifier.json file!
+            //     });
+
+            //     let classification = SentimentProcessor.classifier.classify(value);
+            //     console.log(`Classified input: ${value} with guess ${classification}`);
+            //     resolve(classification); 
+            // })
+
+            SentimentProcessor.loadPreProcessedTrainingModel().then(preTrainedModel => {
                 let classification = SentimentProcessor.classifier.classify(value);
                 console.log(`Classified input: ${value} with guess ${classification}`);
                 resolve(classification); 
-            })
+            });
         });
     }
 
@@ -69,6 +80,22 @@ export class SentimentProcessor {
                         SentimentProcessor.trainingModel = SentimentProcessor.formatParsedTrainingData(jsonObj);
                         resolve(SentimentProcessor.trainingModel);
                     });
+            }
+        });
+    }
+
+    public static loadPreProcessedTrainingModel() {
+        return new Promise((resolve, reject) => {
+            if (SentimentProcessor.trainingModel) {
+                resolve(SentimentProcessor.trainingModel);
+            } else {
+                natural.BayesClassifier.load(__dirname + '/classifier.json', null, (err, storedClassifier) => {
+                    SentimentProcessor.classifier = storedClassifier.classifier;
+                    //SentimentProcessor.trainingModel.train();
+
+                    console.info('Loaded pre-trained model');
+                    resolve(SentimentProcessor.classifier);
+                });
             }
         });
     }

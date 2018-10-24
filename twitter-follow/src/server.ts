@@ -8,6 +8,7 @@ import * as request from 'request';
 import Twitter = require('twitter');
 import * as natural from 'natural';
 import * as redis from 'redis';
+import { SentimentProcessor } from './processing/SentimentProcessor';
 
 import apiRouter from './routes/api';
 
@@ -23,6 +24,9 @@ class App {
       this.middleware();
       this.routes();
       this.launchConf();
+
+      // kick off training model load
+      SentimentProcessor.loadPreProcessedTrainingModel();
   
     }
     private middleware(): void {
@@ -50,6 +54,10 @@ class App {
       this.express.listen(this.express.get("port"), () => {
         console.log(("  App is running at http://localhost:%d \
         in %s mode"), this.express.get("port"), this.express.get("env"));
+        console.log(`ENV Vars: 
+          redis host: ${process.env['redis_host']}
+          redis port: ${process.env['redis_port']}
+        `);
         console.log("  Press CTRL-C to stop\n");
       });
     }
