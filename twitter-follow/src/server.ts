@@ -12,7 +12,19 @@ import { SentimentProcessor } from './processing/SentimentProcessor';
 
 import apiRouter from './routes/api';
 
-dotenv.config({ path: __dirname + "/.env.configuration" });
+// TODO: might clean up - allow docker run vars to override config
+if (process.env['redis_host'] && process.env['redis_port']) {
+  let dockerRedisHost = process.env['redis_host'];
+  let dockerRedisPort = process.env['redis_port'];
+
+  dotenv.config({ path: __dirname + "/.env.configuration" });
+
+  process.env['redis_host'] = dockerRedisHost;
+  process.env['redis_port'] = dockerRedisPort;
+} else {
+  dotenv.config({ path: __dirname + "/.env.configuration" });
+
+}
 
 class App {
 

@@ -58,6 +58,7 @@ export class SentimentProcessor {
 
             SentimentProcessor.loadPreProcessedTrainingModel().then(preTrainedModel => {
                 let classification = SentimentProcessor.classifier.classify(value);
+                // TODO: compare with sentiment analysis value
                 console.log(`Classified input: ${value} with guess ${classification}`);
                 resolve(classification); 
             });
