@@ -1,0 +1,89 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "australiasoutheast"
+        },
+        "vmssName": {
+            "value": "nodeScaleSet"
+        },
+        "vmSku": {
+            "value": "Standard_B1ms"
+        },
+        "adminUsername": {
+            "value": "testuser"
+        },
+        "customData": {
+            "value": "#!/usr/bin/env bash\nsudo docker run -p 80:8000 --env redis_host=10.1.0.9 --env redis_port=6379 -d mleontieff/cloud_computing_two:latest"
+        },
+        "instanceCount": {
+            "value": "2"
+        },
+        "singlePlacementGroup": {
+            "value": "true"
+        },
+        "priority": {
+            "value": "Regular"
+        },
+        "pipName": {
+            "value": "myVMSSIP"
+        },
+        "pipLabel": {
+            "value": "twitter-follow"
+        },
+        "ipAllocationMethod": {
+            "value": "Static"
+        },
+        "skuType": {
+            "value": "Standard"
+        },
+        "subnetId": {
+            "value": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/virtualNetworks/cloud-computing-vnet/subnets/test-subnet"
+        },
+        "enableAcceleratedNetworking": {
+            "value": "false"
+        },
+        "publicIpAddressPerInstance": {
+            "value": "false"
+        },
+        "upgradeMode": {
+            "value": "Manual"
+        },
+        "image": {
+            "value": {
+                "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Compute/images/node-test"
+            }
+        },
+        "autoscaleDefault": {
+            "value": "1"
+        },
+        "autoscaleMax": {
+            "value": "3"
+        },
+        "autoscaleMin": {
+            "value": "1"
+        },
+        "scaleInCPUPercentageThreshold": {
+            "value": "20"
+        },
+        "scaleInInterval": {
+            "value": "1"
+        },
+        "scaleOutCPUPercentageThreshold": {
+            "value": "20"
+        },
+        "scaleOutInterval": {
+            "value": "1"
+        },
+        "sshPublicKey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoyX4RfehxOJ1hShlINjsGhh9P9bKCkDsNsiikqq76aXi2b8Kd65j3j6JbwL5IJvdsWmqxvv3NRq4XoRkYd17PR9cvMmvEbbZyP+zNPCZjo1khzgkVyGQuKmYHtgySMIlkvNWR5QP+44LvtM8bOKHenSMVSWPyUj8MfAeghE7SThg58H0n0kC0u0HVJaJY1wUR3GS4YothHz14iFoIz7F2zUp3ZlmdGkhrwbP7dHtjWYtCn1woOZctWXTHj08uBMp4ckunQMYnkd8cZwsbqqyZRGQTLxse/baPpDwttcUzP74SMr/wyPIDIbwxn32WksDyUBqDdJfppMMRcbiNf0YZM713rtBn9m4Qnn1UCeH0nkb2fzcFGoK62viJkk6rr88sgTxp5zwWdnwsJjWrew94wT9BpQaqE3qV8QsvH271X46su4hmyJ+/xDQTfvof8PzhwxhLY4LREstxNcczOHaJroKEU+DKPxxPjXEwkYHd2m589LPOvlohrw5VP3eCDdrSAr9da2yvQcRlMjP/VfNQo3Sw5jCxThDlWA6sftLS2guJDThoUAKz1W8hp9Xy6bFVzYSCgebbixA7yFJoSV9bPgvLPqOS8Q0r1JrG99vXvFqDtEKFt6UUepg699NMP0S0//Eq0LtYabGmyDMsX+Zr4pYnt19OOGm3tRSIS1NwwQ== michael@leontieff.net"
+        },
+        "vnetName": {
+            "value": "cloud-computing-vnet"
+        },
+        "subnetResourceGroup": {
+            "value": "Cloud-Computing"
+        }
+    }
+}
