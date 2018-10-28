@@ -1,14 +1,18 @@
-import { IDataSource, ITwitterTagSummaryConfig, ITwitterStreamConfig } from "./IDataSource";
 import { SentimentProcessor } from "../processing/SentimentProcessor";
-import { TwitterServiceAPI, StreamStates } from "../services/TwitterServiceAPI";
+import { TwitterServiceAPI } from "../services/TwitterServiceAPI";
 import { CacheService } from "../services/CacheService";
+import { TagSummary } from "../interfaces/TagSummary";
+import { StreamStates } from "../enums/StreamStates";
+import { TwitterTagSummaryConfig } from "../interfaces/configuration/TwitterTagSummaryConfig";
+import { TwitterStreamConfig } from "../interfaces/configuration/TwitterStreamConfig";
+import { DataSource } from "../interfaces/DataSource";
 
 /**
  * Calls the respective NewsAPIServices and normalises the data accordingly
  */
-export class ServiceDataSource implements IDataSource {
+export class ServiceDataSource implements DataSource {
 
-    getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any> {
+    getTwitterTagSummary(summaryConfig: TwitterTagSummaryConfig): Promise<TagSummary> {
         return new Promise((resolve, reject) => {
             // get (pop) abitrary number of results from cache
             let cacheInstance = CacheService.getInstance();
@@ -25,15 +29,16 @@ export class ServiceDataSource implements IDataSource {
                 // run classification and get results
                 // TODO: train the model upon instance start, not on first request
                 Promise.all(classifierInstance.getClassifications(extractedResults)).then(results => {
-                    cacheInstance.updateSummaryForFilter(summaryConfig.tag, results).then(updatedStateObject => {
-                        resolve(updatedStateObject);
-                    })
+                    const classificationResults = results.map(result => result.classification);
+                    cacheInstance.updateSummaryForFilter(summaryConfig.tag, classificationResults).then(updatedStateObject => {
+                        resolve({summary: updatedStateObject, tweets: results});
+                    });
                 });              
             });
         })
     }
 
-    initiateStream(streamConfig: ITwitterStreamConfig): Promise<any> {
+    initiateStream(streamConfig: TwitterStreamConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             let twitterStreamInstance = TwitterServiceAPI.getInstance();
             let cacheInstance = CacheService.getInstance();

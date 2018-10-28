@@ -13,17 +13,17 @@ export class ApiService {
   dataOutput: Map<String, TagResult> = new Map;
 
   streamResponseBehaviourSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  selectedBubbleBehaviourSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  selectedFilterBehaviourSubject: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,
   ) { }
 
-  addToSearch(tagList) {
-    this.tagsInSearch = tagList;
+  updateStream(tagList) {
     return this.killRunningStreams()
       .pipe(
         mergeMap(() => {
+          this.tagsInSearch = tagList;
           return this.http.post('http://localhost:8000/api/initiateStream',
             { tags: tagList });
         })
@@ -31,6 +31,8 @@ export class ApiService {
   }
 
   killRunningStreams() {
+    this.tagsInSearch = [];
+    this.dataOutput.clear();
     return this.http.post('http://localhost:8000/api/setRunningStreamForTermination', {});
   }
 
@@ -46,20 +48,22 @@ export class ApiService {
       { tag })
       .pipe(
         tap((result) => {
-          result['tag'] = tag;
-          const data = Object.keys(result).reduce((finalResult, key) => {
-            finalResult[key.replace(`${ tag }_`, '')] = result[key];
+          const summary = result['summary'];
+          const tweets = result['tweets'];
+          summary['tag'] = tag;
+          const data = Object.keys(summary).reduce((finalResult, key) => {
+            finalResult[key.replace(`${ tag }_`, '')] = summary[key] || 0;
+            finalResult['tweets'] = tweets;
             return finalResult;
           }, {});
           this.dataOutput.set(tag, data as TagResult);
           this.streamResponseBehaviourSubject.next(Array.from(this.dataOutput.values()));
-          this.selectedBubbleBehaviourSubject.next(null);
         })
       );
   }
 
-  setSelectedBubble(bubbleId) {
-    this.selectedBubbleBehaviourSubject.next(bubbleId);
+  setSelectedFilter(filter) {
+    this.selectedFilterBehaviourSubject.next(filter);
   }
 
 }

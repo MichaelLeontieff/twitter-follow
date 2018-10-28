@@ -1,7 +1,10 @@
+import { ClassifiedTweet } from "./ClassifiedTweet";
+
 export interface TagResult {
-    tag: String;
-    processedCount: Number;
-    positiveCount: Number;
-    negativeCount: Number;
-    neutralCount: Number;
+    tag: string;
+    processedCount: number;
+    positiveCount: number;
+    negativeCount: number;
+    neutralCount: number;
+    tweets: ClassifiedTweet[];
 }

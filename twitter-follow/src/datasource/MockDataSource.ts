@@ -1,14 +1,17 @@
-import { IDataSource, ITwitterTagSummaryConfig, ITwitterStreamConfig } from "./IDataSource";
+import { TagSummary } from "../interfaces/TagSummary";
+import { TwitterTagSummaryConfig } from "../interfaces/configuration/TwitterTagSummaryConfig";
+import { TwitterStreamConfig } from "../interfaces/configuration/TwitterStreamConfig";
+import { DataSource } from "../interfaces/DataSource";
 
-export class MockDataSource implements IDataSource {
+export class MockDataSource implements DataSource {
 
-    getTwitterTagSummary(summaryConfig: ITwitterTagSummaryConfig): Promise<any> {
+    getTwitterTagSummary(summaryConfig: TwitterTagSummaryConfig): Promise<TagSummary> {
         return new Promise((resolve, reject) => {
             resolve(undefined);
         })
     }
 
-    initiateStream(streamConfig: ITwitterStreamConfig): Promise<any> {
+    initiateStream(streamConfig: TwitterStreamConfig): Promise<any> {
         return new Promise((resolve, reject) => {
             resolve(undefined);
         })

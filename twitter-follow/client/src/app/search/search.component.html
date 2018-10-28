@@ -4,7 +4,10 @@
       (blur)="addToCurrentSearches(searchInput.value); searchInput.value = '';" placeholder="Hashtags or words to search for...">
   </div>
   <div id="current-searches">
-    <div class="current-search" *ngFor="let search of currentSearches">{{search}}</div>
+    <div class="current-search" *ngFor="let search of currentSearches" [class.selected]="isSelectedFilter(search)" (click)="toggleSelected(search)">{{search}}<div class="delete" (click)="removeFromCurrentSearches(search)">x</div></div>
     <div class="current-search-none" *ngIf="!currentSearches || currentSearches.length == 0">No searches active...</div>
+  </div>
+  <div id="update-stream">
+    <div class="btn btn-info" (click)="updateStream()">Update</div>
   </div>
 </div>

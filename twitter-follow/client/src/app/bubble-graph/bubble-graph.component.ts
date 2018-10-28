@@ -68,7 +68,7 @@ export class BubbleGraphComponent implements OnInit {
     const svg = d3.select(this.graphElement.nativeElement)
       .append('svg')
       .style('width', '100%')
-      .style('height', 'calc(100vh - 110px)')
+      .style('height', 'calc(100vh - 115px)')
       .attr('font-size', '10')
       .attr('font-family', 'sans-serif')
       .attr('text-anchor', 'middle');
@@ -149,6 +149,10 @@ export class BubbleGraphComponent implements OnInit {
     const num = (0.5 * (d.data['positiveCount'] - d.data['negativeCount']) / d.data['processedCount']) + 0.5;
     const colors = ['red', 'orange', 'yellow', 'yellowgreen', 'green'];
     return colors[Math.min(colors.length - 1, Math.floor(num * colors.length))];
+  }
+
+  isFilterSelected() {
+    return this.apiService.selectedFilterBehaviourSubject.value;
   }
 
 }

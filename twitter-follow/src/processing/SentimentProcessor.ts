@@ -1,6 +1,7 @@
 import * as natural from 'natural';
 import path = require('path');
 import csvtojson = require("csvtojson");
+import { ClassifiedTweet } from '../interfaces/ClassifiedTweet';
 
 export const GOP_DEBATE = "/../datasource/trainingdata/Sentiment.csv";
 export const AIRLINE = "/../datasource/trainingdata/Tweets.csv";
@@ -42,7 +43,7 @@ export class SentimentProcessor {
        return SentimentProcessor.tokeniser.tokenize(value);
     }
 
-    public getClassification(value: string): Promise<string> {
+    public getClassification(value: string): Promise<ClassifiedTweet> {
         return new Promise((resolve, reject) => {
             // SentimentProcessor.convertCSVToTrainingModel().then(trainingModel => {
             //     SentimentProcessor.loadTrainingModel();
@@ -60,12 +61,12 @@ export class SentimentProcessor {
                 let classification = SentimentProcessor.classifier.classify(value);
                 // TODO: compare with sentiment analysis value
                 console.log(`Classified input: ${value} with guess ${classification}`);
-                resolve(classification); 
+                resolve({tweet: value, classification}); 
             });
         });
     }
 
-    public getClassifications(values: string[]): Promise<string>[] {
+    public getClassifications(values: string[]): Promise<ClassifiedTweet>[] {
         return values.map(value => this.getClassification(value));
     }
 
@@ -90,7 +91,7 @@ export class SentimentProcessor {
             if (SentimentProcessor.trainingModel) {
                 resolve(SentimentProcessor.trainingModel);
             } else {
-                natural.BayesClassifier.load(__dirname + '/classifier.json', null, (err, storedClassifier) => {
+                natural.BayesClassifier.load(__dirname + '/../datasource/trainingdata/classifier.json', null, (err, storedClassifier) => {
                     SentimentProcessor.classifier = storedClassifier.classifier;
                     //SentimentProcessor.trainingModel.train();
 
@@ -123,10 +124,4 @@ export class SentimentProcessor {
             }
         })
     }
-}
-
-export enum Classifications {
-    POSITIVE = "positive",
-    NEGATIVE = "negative",
-    NEUTRAL = "neutral"
 }

@@ -1,0 +1,45 @@
+#detail-view-container {
+    height: calc(100vh - 108px);
+    background-color: white;
+    border-radius: 0.5em 0.5em 0 0;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+#tweet-view {
+    height: calc(100vh - 115px);
+    overflow-y: scroll;
+    margin-right: -5px;
+}
+
+.tweet {
+    padding: 5px;
+    border-bottom: solid lightgrey 1px;
+}
+
+.classification {
+    border-radius: 1em;
+    width: 15px;
+    height: 15px;
+    float: right;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.tweet-value {
+    width: calc(100% - 23px);
+    font-size: inherit;
+}
+
+.positive {
+    background-color: green;
+}
+
+.neutral {
+    background-color: yellow;
+}
+
+.negative {
+    background-color: red;
+}

@@ -1,7 +1,18 @@
-<div *ngIf="selectedQuery">
+<div id="detail-view-container" *ngIf="isFilterSelected">
   <div class="row">
-    <div class="col">
-      <div>Details</div>
+    <div class="col" *ngIf="summaryData && tweetList">
+      <div id="detail-view">
+        <div id="tweet-view">
+          <div class="tweet" *ngFor="let tweet of tweetList">
+            <div class="classification"
+              [class.positive]="tweet.classification === 'positive'"
+              [class.neutral]="tweet.classification === 'neutral'"
+              [class.negative]="tweet.classification === 'negative'">
+            </div>
+            <div class="tweet-value">{{tweet.tweet}}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

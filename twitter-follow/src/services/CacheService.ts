@@ -1,6 +1,9 @@
 import * as redis from 'redis';
-import { TwitterAPIHelpers } from './TwitterServiceAPI';
-import { Classifications } from '../processing/SentimentProcessor';
+import { KeyValue } from '../interfaces/KeyValue';
+import { SummaryObject } from '../interfaces/SummaryObject';
+import { AppCacheKeyHelper } from '../helpers/AppCacheKeyHelper';
+import { TwitterAPIHelper } from '../helpers/TwitterAPIHelper';
+import { Classifications } from '../enums/Classifications';
 
 export const TWITTER_STREAM_ID = "twitter_stream";
 export const TWITTER_STREAM_STATE = "twitter_stream_state";
@@ -107,7 +110,7 @@ export class CacheService {
         })
     }
 
-    public updateSummaryForFilter(filter: string, classificationResults: string[]): Promise<ISummaryObject> {
+    public updateSummaryForFilter(filter: string, classificationResults: string[]): Promise<SummaryObject> {
         return new Promise((resolve, reject) => {
             // get all values
             Promise.all(this.getSummaryValuesForFilter(filter)).then(cacheContents => {
@@ -127,29 +130,29 @@ export class CacheService {
      * @param stateObject 
      * @param classificationResults 
      */
-    private static getUpdatedStateObject(filter: string, stateObject: ISummaryObject, classificationResults: string[]) {
+    private static getUpdatedStateObject(filter: string, stateObject: SummaryObject, classificationResults: string[]) {
         let clone = Object.assign({}, stateObject);
         classificationResults.forEach(classification => {
             // update classifications
             let value = Number(clone[
-                AppCacheKeyHelpers
+                AppCacheKeyHelper
                 .getClassificationKeyForFilter(filter, <Classifications>classification)
             ]);
 
             clone[
-                AppCacheKeyHelpers
+                AppCacheKeyHelper
                 .getClassificationKeyForFilter(filter, <Classifications>classification)
             ] = String(++value);
         });
 
         // update total processed before returning
         let totalProcessed = Number(clone[
-            AppCacheKeyHelpers
+            AppCacheKeyHelper
             .getSummaryCountKeyForFilter(filter)
         ]) + classificationResults.length;
 
         clone[
-            AppCacheKeyHelpers
+            AppCacheKeyHelper
             .getSummaryCountKeyForFilter(filter)
         ] = String(totalProcessed);
 
@@ -165,8 +168,8 @@ export class CacheService {
      * - total positive tweets
      * - total neutral tweets
      */
-    public getSummaryValuesForFilter(filter: string): Promise<IKeyValue>[] {
-        return AppCacheKeyHelpers.getCacheKeysForFilterSummary(filter).map(key => {
+    public getSummaryValuesForFilter(filter: string): Promise<KeyValue>[] {
+        return AppCacheKeyHelper.getCacheKeysForFilterSummary(filter).map(key => {
             return new Promise((resolve, reject) => {
                 CacheService.client.get(key, (err, result) => {
                     (result === "OK") 
@@ -178,8 +181,8 @@ export class CacheService {
         });
     }
 
-    private static getKeyValueMapFromArray(results: IKeyValue[]): ISummaryObject {
-        let retData: ISummaryObject = {};
+    private static getKeyValueMapFromArray(results: KeyValue[]): SummaryObject {
+        let retData: SummaryObject = {};
         results.forEach(result => {
             retData[result.key] = result.value;
         });
@@ -195,8 +198,8 @@ export class CacheService {
      * - total positive tweets
      * - total neutral tweets
      */
-    public setSummaryValuesForFilter(filter: string, values: ISummaryObject): Promise<IKeyValue>[] {
-        return AppCacheKeyHelpers.getCacheKeysForFilterSummary(filter).map(key => {
+    public setSummaryValuesForFilter(filter: string, values: SummaryObject): Promise<KeyValue>[] {
+        return AppCacheKeyHelper.getCacheKeysForFilterSummary(filter).map(key => {
             return new Promise((resolve, reject) => {
                 CacheService.client.set(key, values[key], (err, result) => {
                     (err)
@@ -208,7 +211,7 @@ export class CacheService {
     }
 
     public insertTweetIntoCache(filter: string, tweet: any) {
-        let cleanedTweet = TwitterAPIHelpers.getCleanedTweet(tweet);
+        let cleanedTweet = TwitterAPIHelper.getCleanedTweet(tweet);
         CacheService.client.sadd(filter, JSON.stringify(cleanedTweet));
         CacheService.resourceCount++;
     }
@@ -216,33 +219,4 @@ export class CacheService {
     private static getSummaryCountKeyForFilter(filter: string) {
         return `${filter}_processedCount`;
     }
-}
-
-export class AppCacheKeyHelpers {
-
-    public static getSummaryCountKeyForFilter(filter: string): string {
-        return `${filter}_processedCount`;
-    }
-
-    public static getClassificationKeyForFilter(filter: string, classification: Classifications): string {
-        return `${filter}_${classification}Count`;
-    }
-
-    public static getCacheKeysForFilterSummary(filter: string): string[] {
-        return [
-            AppCacheKeyHelpers.getSummaryCountKeyForFilter(filter),
-            AppCacheKeyHelpers.getClassificationKeyForFilter(filter, Classifications.POSITIVE),
-            AppCacheKeyHelpers.getClassificationKeyForFilter(filter, Classifications.NEGATIVE),
-            AppCacheKeyHelpers.getClassificationKeyForFilter(filter, Classifications.NEUTRAL)
-        ]
-    }
-}
-
-export interface IKeyValue {
-    key: string;
-    value: string;
-}
-
-export interface ISummaryObject {
-    [redisCacheKey: string]: string;
 }

@@ -1,16 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { DataManager } from '../datasource/DataManager';
-import { DataSourceTypes } from '../datasource/IDataSource';
+import { DataSourceTypes } from "../enums/DataSourceTypes";
+import { DataSourceFactory } from "../datasource/DataSourceFactory";
+import { DataSource } from "../interfaces/DataSource";
 
-let dataManager;
+let dataSource: DataSource;
 
 /**
  * POST /api/twitterTagSummary
  */
 export const getTwitterTagSummary = (req: any, res: Response) => {
-  if (!dataManager)  dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+  if (!dataSource) dataSource = DataSourceFactory.getDataSource(<DataSourceTypes>process.env['data_source_configuration']);
 
-  dataManager.dataSource.getTwitterTagSummary(req.body).then(response => {
+  dataSource.getTwitterTagSummary(req.body).then(response => {
     res.json(response);
   }).catch(error => {
     res.json(error);
@@ -21,9 +22,9 @@ export const getTwitterTagSummary = (req: any, res: Response) => {
  * POST /api/initiateStream
  */
 export const initiateStream = (req: any, res: Response) => {
-  if (!dataManager) dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+  if (!dataSource) dataSource = DataSourceFactory.getDataSource(<DataSourceTypes>process.env['data_source_configuration']);
 
-  dataManager.dataSource.initiateStream(req.body).then(response => {
+  dataSource.initiateStream(req.body).then(response => {
     res.json(response);
   }).catch(error => {
     res.json(error);
@@ -34,9 +35,9 @@ export const initiateStream = (req: any, res: Response) => {
  * POST /api/setRunningStreamForTermination
  */
 export const setTerminationFlag = (req: any, res: Response) => {
-  if (!dataManager) dataManager = new DataManager(<DataSourceTypes>process.env['data_source_configuration']);
+  if (!dataSource) dataSource = DataSourceFactory.getDataSource(<DataSourceTypes>process.env['data_source_configuration']);
 
-  dataManager.dataSource.setRunningStreamForTermination(req.body).then(response => {
+  dataSource.setRunningStreamForTermination().then(response => {
     res.json(response);
   }).catch(error => {
     res.json(error);
