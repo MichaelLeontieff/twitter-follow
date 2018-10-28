@@ -104,28 +104,28 @@ export class BubbleGraphComponent implements OnInit {
 
     circle.transition(t)
       .style('fill', d => this.getColor(d))
-      .attr('r', d => d.r)
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y);
+      .attr('r', d => d.r || 0)
+      .attr('cx', d => d.x || 0)
+      .attr('cy', d => d.y || 0);
 
     text.transition(t)
-      .attr('x', d => d.x)
-      .attr('y', d => d.y)
+      .attr('x', d => d.x || 0)
+      .attr('y', d => d.y || 0)
       .style('z-index', 1200);
 
     circle.enter().append('circle')
       .attr('r', 1e-6)
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
+      .attr('cx', d => d.x || 0)
+      .attr('cy', d => d.y || 0)
       .style('fill', '#fff')
       .transition(t)
       .style('fill', d => this.getColor(d))
-      .attr('r', d => d.r);
+      .attr('r', d => d.r || 0);
 
     text.enter().append('text')
       .attr('opacity', 1e-6)
-      .attr('x', d => d.x)
-      .attr('y', d => d.y)
+      .attr('x', d => d.x || 0)
+      .attr('y', d => d.y || 0)
       .text(d => d.data['tag'])
       .transition(t)
       .style('z-index', 1200)

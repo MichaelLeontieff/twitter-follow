@@ -40,6 +40,9 @@ export class ApiService {
     this.tagsInSearch.forEach((tag) => {
       this.getData(tag).subscribe();
     });
+    if (this.tagsInSearch.length === 0) {
+      this.streamResponseBehaviourSubject.next(this.dataOutput);
+    }
     return of(true);
   }
 
