@@ -33,7 +33,7 @@ export class SearchComponent implements OnInit {
     } 
   }
 
-  toggleSelected(filter: String) {
+  toggleSelected(filter: string) {
     if (filter && this.apiService.selectedFilterBehaviourSubject.value !== filter) {
       this.apiService.setSelectedFilter(filter);
     } else if (filter) {

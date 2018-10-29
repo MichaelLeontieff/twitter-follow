@@ -10,10 +10,10 @@ import { TagResult } from './models/TagResult';
 export class ApiService {
 
   tagsInSearch: String[] = [];
-  dataOutput: Map<String, TagResult> = new Map;
+  dataOutput: Map<string, TagResult> = new Map;
 
-  streamResponseBehaviourSubject: BehaviorSubject<any> = new BehaviorSubject(null);
-  selectedFilterBehaviourSubject: BehaviorSubject<any> = new BehaviorSubject(null);
+  streamResponseBehaviourSubject: BehaviorSubject<TagResult[]> = new BehaviorSubject(null);
+  selectedFilterBehaviourSubject: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
     private http: HttpClient,
@@ -41,7 +41,7 @@ export class ApiService {
       this.getData(tag).subscribe();
     });
     if (this.tagsInSearch.length === 0) {
-      this.streamResponseBehaviourSubject.next(this.dataOutput);
+      this.streamResponseBehaviourSubject.next(Array.from(this.dataOutput.values()));
     }
     return of(true);
   }
@@ -65,7 +65,7 @@ export class ApiService {
       );
   }
 
-  setSelectedFilter(filter) {
+  setSelectedFilter(filter: string) {
     this.selectedFilterBehaviourSubject.next(filter);
   }
 
