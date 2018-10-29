@@ -21,7 +21,7 @@ RUN rm -rf client/
 RUN npm install
 
 # Client
-#RUN npm run build
+RUN npm run build
 
 RUN rm -rf src/
 
