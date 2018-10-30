@@ -220,7 +220,22 @@
                             "priority": 1001,
                             "direction": "Inbound"
                         }
+                    },
+                    {
+                        "name": "allowDNS",
+                        "properties": {
+                            "description": "Allow dns for dockerhub link resolution",
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "53",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1002,
+                            "direction": "Inbound"
+                        }
                     }
+                    
                 ]
             }
         },

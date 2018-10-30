@@ -1,0 +1,8 @@
+# Trending filters
+
+trump
+bitcoin
+halloween
+travel
+autumn
+music

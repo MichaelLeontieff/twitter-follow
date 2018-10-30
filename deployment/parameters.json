@@ -15,10 +15,10 @@
             "value": "testuser"
         },
         "customData": {
-            "value": "#!/usr/bin/env bash\nsudo docker run -p 80:8000 --env redis_host=10.1.0.9 --env redis_port=6379 -d mleontieff/cloud_computing_two:latest"
+            "value": "#!/usr/bin/env bash\nsudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf\nsudo docker run -p 80:8000 --env redis_host=10.1.0.9 --env redis_port=6379 -d mleontieff/cloud_computing_two:1"
         },
         "instanceCount": {
-            "value": "2"
+            "value": "1"
         },
         "singlePlacementGroup": {
             "value": "true"
@@ -71,7 +71,7 @@
             "value": "1"
         },
         "scaleOutCPUPercentageThreshold": {
-            "value": "20"
+            "value": "50"
         },
         "scaleOutInterval": {
             "value": "1"
