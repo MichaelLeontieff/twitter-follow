@@ -9,6 +9,8 @@ import { TagResult } from './models/TagResult';
 })
 export class ApiService {
 
+  HOST = window.location.host;
+
   tagsInSearch: String[] = [];
   dataOutput: Map<string, TagResult> = new Map;
 
@@ -24,7 +26,7 @@ export class ApiService {
       .pipe(
         mergeMap(() => {
           this.tagsInSearch = tagList;
-          return this.http.post('http://localhost:8000/api/initiateStream',
+          return this.http.post(`http://${this.HOST}/api/initiateStream`,
             { tags: tagList });
         })
       );
@@ -33,7 +35,7 @@ export class ApiService {
   killRunningStreams() {
     this.tagsInSearch = [];
     this.dataOutput.clear();
-    return this.http.post('http://localhost:8000/api/setRunningStreamForTermination', {});
+    return this.http.post(`http://${this.HOST}/api/setRunningStreamForTermination`, {});
   }
 
   getAllData() {
@@ -47,7 +49,7 @@ export class ApiService {
   }
 
   getData(tag) {
-    return this.http.post('http://localhost:8000/api/twitterTagSummary',
+    return this.http.post(`http://${this.HOST}/api/twitterTagSummary`,
       { tag })
       .pipe(
         tap((result) => {
