@@ -13,7 +13,7 @@ export class SearchComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.apiService.killRunningStreams().subscribe();
+    //this.apiService.killRunningStreams().subscribe();
   }
 
   addToCurrentSearches(search: String) {
@@ -50,8 +50,12 @@ export class SearchComponent implements OnInit {
       this.apiService.updateStream(this.currentSearches).subscribe();
       this.apiService.setSelectedFilter(null);
     } else {
-      this.apiService.killRunningStreams().subscribe();
+      this.killStream();
     }
+  }
+
+  killStream() {
+    this.apiService.killRunningStreams().subscribe();
   }
 
 }

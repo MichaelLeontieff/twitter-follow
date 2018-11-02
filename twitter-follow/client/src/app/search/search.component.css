@@ -14,7 +14,7 @@
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    width: calc(100% - 100px);
+    width: calc(100% - 190px);
     display: inline-block;
     margin-right: 5px;
     margin-left: 5px;
@@ -51,7 +51,21 @@
     height: 49px;
 }
 
+#delete-stream {
+    display: inline-block;
+    width: 85px;
+    text-align: center;
+    vertical-align: top;
+    height: 49px;
+}
+
 #update-stream .btn {
+    width: 85px;
+    height: 100%;
+    line-height: 2;
+}
+
+#delete-stream .btn {
     width: 85px;
     height: 100%;
     line-height: 2;
