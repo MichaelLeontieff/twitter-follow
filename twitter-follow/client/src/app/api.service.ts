@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { tap, map, catchError, mergeMap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { tap, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, of, forkJoin } from 'rxjs';
 import { TagResult } from './models/TagResult';
 
 @Injectable({
@@ -39,13 +39,12 @@ export class ApiService {
   }
 
   getAllData() {
-    this.tagsInSearch.forEach((tag) => {
-      this.getData(tag).subscribe();
-    });
     if (this.tagsInSearch.length === 0) {
       this.streamResponseBehaviourSubject.next(Array.from(this.dataOutput.values()));
+      return of(null);
     }
-    return of(true);
+    const getDataObservables = this.tagsInSearch.map(tag => this.getData(tag));
+    return forkJoin(getDataObservables);
   }
 
   getData(tag) {

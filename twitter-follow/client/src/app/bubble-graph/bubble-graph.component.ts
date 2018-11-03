@@ -1,9 +1,7 @@
-import { Component, OnInit, OnDestroy, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
 import { ApiService } from '../api.service';
-import { Subscription, of, forkJoin } from 'rxjs';
-import { timer, Observable, Subject } from 'rxjs';
-import { switchMap, takeUntil, catchError } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { TagResult } from '../models/TagResult';
 
 @Component({
@@ -11,7 +9,7 @@ import { TagResult } from '../models/TagResult';
   templateUrl: './bubble-graph.component.html',
   styleUrls: ['./bubble-graph.component.css']
 })
-export class BubbleGraphComponent implements OnInit {
+export class BubbleGraphComponent implements OnInit, OnDestroy {
 
   @ViewChild('graph')
   graphElement: ElementRef;
@@ -23,23 +21,10 @@ export class BubbleGraphComponent implements OnInit {
   private streamSubscription: Subscription;
   private streamCreationSubscription: Subscription;
 
-  private killTrigger: Subject<void> = new Subject();
-  private refreshInterval$: Observable<Object> = timer(0, 5000)
-    .pipe(
-      // This kills the request if the user closes the component 
-      takeUntil(this.killTrigger),
-      // switchMap cancels the last request, if no response have been received since last tick
-      switchMap(() => this.apiService.getAllData()),
-      // catchError handles http throws 
-      catchError(error => of('Error'))
-    );
-
-  public result$: Observable<Object> = this.refreshInterval$;
-
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.streamCreationSubscription = this.refreshInterval$.subscribe();
+    this.resetIntervalSubscription();
     this.streamSubscription = this.apiService.streamResponseBehaviourSubject.subscribe((streamOutput) => {
       if (streamOutput) {
         this.tagResults = streamOutput;
@@ -54,13 +39,21 @@ export class BubbleGraphComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.killTrigger.next();
     if (this.streamSubscription) {
       this.streamSubscription.unsubscribe();
     }
     if (this.streamCreationSubscription) {
       this.streamCreationSubscription.unsubscribe();
     }
+  }
+
+  resetIntervalSubscription() {
+    if (this.streamCreationSubscription) {
+      this.streamCreationSubscription.unsubscribe();
+    }
+    this.streamCreationSubscription = this.apiService.getAllData().subscribe(null,null,() => {
+      setTimeout(() => this.resetIntervalSubscription(), 1000);
+    });
   }
 
   buildGraph() {
