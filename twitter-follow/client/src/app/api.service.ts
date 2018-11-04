@@ -60,8 +60,10 @@ export class ApiService {
             finalResult['tweets'] = tweets;
             return finalResult;
           }, {});
-          this.dataOutput.set(tag, data as TagResult);
-          this.streamResponseBehaviourSubject.next(Array.from(this.dataOutput.values()));
+          if (this.tagsInSearch.includes(tag)) {
+            this.dataOutput.set(tag, data as TagResult);
+            this.streamResponseBehaviourSubject.next(Array.from(this.dataOutput.values()));
+          }
         })
       );
   }

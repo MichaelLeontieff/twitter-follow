@@ -139,9 +139,16 @@ export class BubbleGraphComponent implements OnInit, OnDestroy {
   }
 
   getColor(d) {
-    const num = (0.5 * (d.data['positiveCount'] - d.data['negativeCount']) / d.data['processedCount']) + 0.5;
-    const colors = ['red', 'orange', 'yellow', 'yellowgreen', 'green'];
-    return colors[Math.min(colors.length - 1, Math.floor(num * colors.length))];
+    let num = (0.5 * (d.data['positiveCount'] - d.data['negativeCount']) / d.data['processedCount']) + 0.5;
+    if (num <= 0.35) {
+      return 'red';
+    } else if (num >= 0.65) {
+      return 'green';
+    }
+    const colors = ['orange', 'yellow', 'yellowgreen'];
+    const range = 0.65 - 0.35;
+    num = (num - 0.35) / range;
+    return colors[Math.floor(num * colors.length)];
   }
 
   isFilterSelected() {
