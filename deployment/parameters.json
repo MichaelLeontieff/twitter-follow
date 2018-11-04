@@ -15,7 +15,7 @@
             "value": "testuser"
         },
         "customData": {
-            "value": "#!/usr/bin/env bash\nsudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf\nsudo docker run -p 80:8000 --env redis_host=10.1.0.9 --env redis_port=6379 -d mleontieff/cloud_computing_two:1"
+            "value": "#!/usr/bin/env bash\nsudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf\nsudo docker run -p 80:8000 --env redis_host=10.1.0.9 --env redis_port=6379 -d mleontieff/cloud_computing_two:2.1"
         },
         "instanceCount": {
             "value": "1"
