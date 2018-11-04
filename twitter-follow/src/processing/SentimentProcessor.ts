@@ -2,6 +2,7 @@ import * as natural from 'natural';
 import path = require('path');
 import csvtojson = require("csvtojson");
 import { ClassifiedTweet } from '../interfaces/ClassifiedTweet';
+import { Classifications } from '../enums/Classifications';
 
 export const GOP_DEBATE = "/../datasource/trainingdata/Sentiment.csv";
 export const AIRLINE = "/../datasource/trainingdata/Tweets.csv";
@@ -45,23 +46,12 @@ export class SentimentProcessor {
 
     public getClassification(value: string): Promise<ClassifiedTweet> {
         return new Promise((resolve, reject) => {
-            // SentimentProcessor.convertCSVToTrainingModel().then(trainingModel => {
-            //     SentimentProcessor.loadTrainingModel();
-
-            //     SentimentProcessor.classifier.save(__dirname + '/classifier.json', (err, classifier) => {
-            //         // the classifier is saved to the classifier.json file!
-            //     });
-
-            //     let classification = SentimentProcessor.classifier.classify(value);
-            //     console.log(`Classified input: ${value} with guess ${classification}`);
-            //     resolve(classification); 
-            // })
-
             SentimentProcessor.loadPreProcessedTrainingModel().then(preTrainedModel => {
                 let classification = SentimentProcessor.classifier.classify(value);
-                // TODO: compare with sentiment analysis value
-                console.log(`Classified input: ${value} with guess ${classification}`);
-                resolve({tweet: value, classification}); 
+                let sentiment = this.getSentiment(value);
+                let deviation = SentimentProcessor.logClassificationDeviation(classification, sentiment);
+                console.log(`Classified input: ${value} with guess ${deviation.classification}`);
+                resolve({tweet: value, classification: deviation.classification}); 
             });
         });
     }
@@ -123,5 +113,19 @@ export class SentimentProcessor {
                 label: tweetData.airline_sentiment
             }
         })
+    }
+
+    private static logClassificationDeviation(classification: string, sentiment: number) {
+        classification = SentimentProcessor.mapSentimentToClassification(sentiment);
+        if (classification !== SentimentProcessor.mapSentimentToClassification(sentiment)) {
+            console.log(`Classification ${classification} deviates from sentiment ${sentiment}`);
+        }
+        return {classification};
+    }
+
+    private static mapSentimentToClassification(sentiment: number) {
+        if (sentiment === 0) return Classifications.NEUTRAL;
+        if (sentiment > 0) return Classifications.POSITIVE;
+        if (sentiment < 0) return Classifications.NEGATIVE;
     }
 }
