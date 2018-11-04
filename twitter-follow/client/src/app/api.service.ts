@@ -17,6 +17,8 @@ export class ApiService {
   streamResponseBehaviourSubject: BehaviorSubject<TagResult[]> = new BehaviorSubject(null);
   selectedFilterBehaviourSubject: BehaviorSubject<string> = new BehaviorSubject(null);
 
+  queryStringConfiguration;
+
   constructor(
     private http: HttpClient,
   ) { }
@@ -48,8 +50,12 @@ export class ApiService {
   }
 
   getData(tag) {
+    let config = this.getQueryStringConfiguration();
+    let requestBody: {tag: string, chunkSize?: string} = { tag };
+    Object.assign(requestBody, config)
+
     return this.http.post(`http://${this.HOST}/api/twitterTagSummary`,
-      { tag })
+      requestBody)
       .pipe(
         tap((result) => {
           const summary = result['summary'];
@@ -66,8 +72,31 @@ export class ApiService {
       );
   }
 
+  getQueryStringConfiguration() {
+    if (this.queryStringConfiguration) return this.queryStringConfiguration; 
+    
+    this.queryStringConfiguration = getParams();
+
+    return this.queryStringConfiguration;
+  }
+
   setSelectedFilter(filter: string) {
     this.selectedFilterBehaviourSubject.next(filter);
   }
 
+}
+
+export const getParams = () => {
+  let match,
+      pl     = /\+/g,  // Regex for replacing addition symbol with a space
+      search = /([^&=]+)=?([^&]*)/g,
+      decode = (s) => { return decodeURIComponent(s.replace(pl, " ")); },
+      query  = window.location.search.substring(1);
+
+  let urlParams = {};
+  while (match = search.exec(query)) {
+     urlParams[decode(match[1])] = decode(match[2]);
+  }
+
+  return urlParams;
 }
