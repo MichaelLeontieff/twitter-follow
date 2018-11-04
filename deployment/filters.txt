@@ -1,8 +1,12 @@
 # Trending filters
 
 trump
-bitcoin
+hillary
+republicans
+democrates
+
 halloween
+christmas
 travel
 autumn
 music
