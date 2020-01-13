@@ -1,0 +1,308 @@
+{
+    "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Resources/deployments/twitter-follow",
+    "location": null,
+    "name": "twitter-follow",
+    "properties": {
+      "correlationId": "aa69906f-641c-4da4-9782-2ba384774fcd",
+      "debugSetting": null,
+      "dependencies": [
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/publicIPAddresses/myVMSSIP",
+              "resourceGroup": "Cloud-Computing",
+              "resourceName": "myVMSSIP",
+              "resourceType": "Microsoft.Network/publicIPAddresses"
+            }
+          ],
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/loadBalancers/nodeScaleSetlb",
+          "resourceGroup": "Cloud-Computing",
+          "resourceName": "nodeScaleSetlb",
+          "resourceType": "Microsoft.Network/loadBalancers"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/networkSecurityGroups/nodeScaleSetnsg",
+              "resourceGroup": "Cloud-Computing",
+              "resourceName": "nodeScaleSetnsg",
+              "resourceType": "Microsoft.Network/networkSecurityGroups"
+            }
+          ],
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Resources/deployments/updateVNet",
+          "resourceGroup": "Cloud-Computing",
+          "resourceName": "updateVNet",
+          "resourceType": "Microsoft.Resources/deployments"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/loadBalancers/nodeScaleSetlb",
+              "resourceGroup": "Cloud-Computing",
+              "resourceName": "nodeScaleSetlb",
+              "resourceType": "Microsoft.Network/loadBalancers"
+            },
+            {
+              "apiVersion": "2018-01-01",
+              "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/loadBalancers/nodeScaleSetlb",
+              "resourceGroup": "Cloud-Computing",
+              "resourceName": "nodeScaleSetlb",
+              "resourceType": "Microsoft.Network/loadBalancers"
+            }
+          ],
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Compute/virtualMachineScaleSets/nodeScaleSet",
+          "resourceGroup": "Cloud-Computing",
+          "resourceName": "nodeScaleSet",
+          "resourceType": "Microsoft.Compute/virtualMachineScaleSets"
+        },
+        {
+          "dependsOn": [
+            {
+              "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Compute/virtualMachineScaleSets/nodeScaleSet",
+              "resourceGroup": "Cloud-Computing",
+              "resourceName": "nodeScaleSet",
+              "resourceType": "Microsoft.Compute/virtualMachineScaleSets"
+            }
+          ],
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Insights/autoscaleSettings/cpuautoscalenodescale",
+          "resourceGroup": "Cloud-Computing",
+          "resourceName": "cpuautoscalenodescale",
+          "resourceType": "Microsoft.Insights/autoscaleSettings"
+        }
+      ],
+      "duration": "PT2M12.5657341S",
+      "mode": "Incremental",
+      "onErrorDeployment": null,
+      "outputResources": [
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Compute/virtualMachineScaleSets/nodeScaleSet",
+          "resourceGroup": "Cloud-Computing"
+        },
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Insights/autoscaleSettings/cpuautoscalenodescale",
+          "resourceGroup": "Cloud-Computing"
+        },
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/loadBalancers/nodeScaleSetlb",
+          "resourceGroup": "Cloud-Computing"
+        },
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/networkSecurityGroups/nodeScaleSetnsg",
+          "resourceGroup": "Cloud-Computing"
+        },
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/publicIPAddresses/myVMSSIP",
+          "resourceGroup": "Cloud-Computing"
+        },
+        {
+          "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/virtualNetworks/cloud-computing-vnet",
+          "resourceGroup": "Cloud-Computing"
+        }
+      ],
+      "outputs": null,
+      "parameters": {
+        "adminUsername": {
+          "type": "String",
+          "value": "testuser"
+        },
+        "autoscaleDefault": {
+          "type": "String",
+          "value": "1"
+        },
+        "autoscaleMax": {
+          "type": "String",
+          "value": "3"
+        },
+        "autoscaleMin": {
+          "type": "String",
+          "value": "1"
+        },
+        "customData": {
+          "type": "String",
+          "value": "sudo docker run -p 80:8000 --env redis_host=10.1.0.4 --env redis_port=6379 -d mleontieff/cloud_computing_two:latest"
+        },
+        "enableAcceleratedNetworking": {
+          "type": "String",
+          "value": "false"
+        },
+        "image": {
+          "type": "Object",
+          "value": {
+            "id": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Compute/images/node-test",
+            "resourceGroup": "Cloud-Computing"
+          }
+        },
+        "instanceCount": {
+          "type": "String",
+          "value": "2"
+        },
+        "ipAllocationMethod": {
+          "type": "String",
+          "value": "Static"
+        },
+        "location": {
+          "type": "String",
+          "value": "australiasoutheast"
+        },
+        "pipLabel": {
+          "type": "String",
+          "value": "twitter-follow"
+        },
+        "pipName": {
+          "type": "String",
+          "value": "myVMSSIP"
+        },
+        "priority": {
+          "type": "String",
+          "value": "Regular"
+        },
+        "publicIpAddressPerInstance": {
+          "type": "String",
+          "value": "false"
+        },
+        "scaleInCPUPercentageThreshold": {
+          "type": "String",
+          "value": "20"
+        },
+        "scaleInInterval": {
+          "type": "String",
+          "value": "1"
+        },
+        "scaleOutCPUPercentageThreshold": {
+          "type": "String",
+          "value": "20"
+        },
+        "scaleOutInterval": {
+          "type": "String",
+          "value": "1"
+        },
+        "singlePlacementGroup": {
+          "type": "String",
+          "value": "true"
+        },
+        "skuType": {
+          "type": "String",
+          "value": "Standard"
+        },
+        "sshPublicKey": {
+          "type": "String",
+          "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoyX4RfehxOJ1hShlINjsGhh9P9bKCkDsNsiikqq76aXi2b8Kd65j3j6JbwL5IJvdsWmqxvv3NRq4XoRkYd17PR9cvMmvEbbZyP+zNPCZjo1khzgkVyGQuKmYHtgySMIlkvNWR5QP+44LvtM8bOKHenSMVSWPyUj8MfAeghE7SThg58H0n0kC0u0HVJaJY1wUR3GS4YothHz14iFoIz7F2zUp3ZlmdGkhrwbP7dHtjWYtCn1woOZctWXTHj08uBMp4ckunQMYnkd8cZwsbqqyZRGQTLxse/baPpDwttcUzP74SMr/wyPIDIbwxn32WksDyUBqDdJfppMMRcbiNf0YZM713rtBn9m4Qnn1UCeH0nkb2fzcFGoK62viJkk6rr88sgTxp5zwWdnwsJjWrew94wT9BpQaqE3qV8QsvH271X46su4hmyJ+/xDQTfvof8PzhwxhLY4LREstxNcczOHaJroKEU+DKPxxPjXEwkYHd2m589LPOvlohrw5VP3eCDdrSAr9da2yvQcRlMjP/VfNQo3Sw5jCxThDlWA6sftLS2guJDThoUAKz1W8hp9Xy6bFVzYSCgebbixA7yFJoSV9bPgvLPqOS8Q0r1JrG99vXvFqDtEKFt6UUepg699NMP0S0//Eq0LtYabGmyDMsX+Zr4pYnt19OOGm3tRSIS1NwwQ== michael@leontieff.net"
+        },
+        "subnetId": {
+          "type": "String",
+          "value": "/subscriptions/065094f5-5303-4b73-9b21-22f69f58d76b/resourceGroups/Cloud-Computing/providers/Microsoft.Network/virtualNetworks/cloud-computing-vnet/subnets/test-subnet"
+        },
+        "subnetResourceGroup": {
+          "type": "String",
+          "value": "Cloud-Computing"
+        },
+        "upgradeMode": {
+          "type": "String",
+          "value": "Manual"
+        },
+        "vmSku": {
+          "type": "String",
+          "value": "Standard_B1ms"
+        },
+        "vmssName": {
+          "type": "String",
+          "value": "nodeScaleSet"
+        },
+        "vnetName": {
+          "type": "String",
+          "value": "cloud-computing-vnet"
+        }
+      },
+      "parametersLink": null,
+      "providers": [
+        {
+          "id": null,
+          "namespace": "Microsoft.Network",
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                "australiasoutheast"
+              ],
+              "properties": null,
+              "resourceType": "publicIPAddresses"
+            },
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                "australiasoutheast"
+              ],
+              "properties": null,
+              "resourceType": "loadBalancers"
+            },
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                "australiasoutheast"
+              ],
+              "properties": null,
+              "resourceType": "networkSecurityGroups"
+            }
+          ]
+        },
+        {
+          "id": null,
+          "namespace": "Microsoft.Resources",
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                null
+              ],
+              "properties": null,
+              "resourceType": "deployments"
+            }
+          ]
+        },
+        {
+          "id": null,
+          "namespace": "Microsoft.Compute",
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                "australiasoutheast"
+              ],
+              "properties": null,
+              "resourceType": "virtualMachineScaleSets"
+            }
+          ]
+        },
+        {
+          "id": null,
+          "namespace": "Microsoft.Insights",
+          "registrationState": null,
+          "resourceTypes": [
+            {
+              "aliases": null,
+              "apiVersions": null,
+              "locations": [
+                "australiasoutheast"
+              ],
+              "properties": null,
+              "resourceType": "autoscaleSettings"
+            }
+          ]
+        }
+      ],
+      "provisioningState": "Succeeded",
+      "template": null,
+      "templateHash": "3808672146814541723",
+      "templateLink": null,
+      "timestamp": "2018-10-26T05:07:22.995960+00:00"
+    },
+    "resourceGroup": "Cloud-Computing"
+  }

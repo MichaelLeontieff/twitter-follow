@@ -1,0 +1,101 @@
+#search-app-container {
+    background-color: white;
+    border-radius: 0 0 0.5em 0.5em;
+}
+
+#search-box {
+    padding: 5px;
+}
+
+#current-searches {
+    padding: 5px;
+    text-align: center;
+    height: 49px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width: calc(100% - 190px);
+    display: inline-block;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.current-search, .current-search-none {
+    display: inline-block;
+    min-width: 120px;
+    border: solid black 1px;
+    border-radius: 0.2rem;
+    padding: 5px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    cursor: default;
+}
+
+.current-search-none {
+    border: none;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.selected {
+    background-color: rgb(154, 205, 50, 50%);
+    font-weight: bold;
+}
+
+#update-stream {
+    display: inline-block;
+    width: 85px;
+    text-align: center;
+    vertical-align: top;
+    margin-right: 5px;
+    height: 49px;
+}
+
+#delete-stream {
+    display: inline-block;
+    width: 85px;
+    text-align: center;
+    vertical-align: top;
+    height: 49px;
+}
+
+#update-stream .btn {
+    width: 85px;
+    height: 100%;
+    line-height: 2;
+}
+
+#delete-stream .btn {
+    width: 85px;
+    height: 100%;
+    line-height: 2;
+}
+
+.delete {
+    display: inline;
+    cursor: pointer;
+    float: right;
+    line-height: 0.5;
+    font-weight: normal;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}

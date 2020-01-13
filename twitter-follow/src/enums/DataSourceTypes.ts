@@ -1,0 +1,4 @@
+export enum DataSourceTypes {
+    MOCK_DATA_SOURCE = "MOCK_DATA_SOURCE",
+    REAL_DATA_SOURCE = "REAL_DATA_SOURCE"
+}
