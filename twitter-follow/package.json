@@ -30,7 +30,7 @@
     "oauth": "^0.9.15",
     "redis": "^2.8.0",
     "request": "^2.88.0",
-    "shelljs": "^0.8.2",
+    "shelljs": "^0.8.5",
     "twitter": "^1.7.1",
     "typescript": "^3.1.3"
   }
